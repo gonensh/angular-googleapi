@@ -45,28 +45,15 @@ angular.module('googleApi', [])
             var deferred = $q.defer();
             var svc = {
                 login: function () {
-                    gapi.auth.authorize({ client_id: config.clientId, scope: config.scopes, immediate: false}, this.handleAuthResult);
-
+                    googleApiBuilder.runClientLoadedCallbacks();
                     return deferred.promise;
-                },
-
-                handleAuthResult: function(authResult) {
-                    if (authResult && !authResult.error) {
-                        var data = {};
-                        $rootScope.$broadcast("google:authenticated", authResult);
-                        googleApiBuilder.runClientLoadedCallbacks();
-                        deferred.resolve(data);
-                    } else {
-                        deferred.reject(authResult.error);
-                    }
-                },
+                }
             };
 
             // load the gapi client, instructing it to invoke a globally-accessible function when finished
             window._googleApiLoaded = function() {
-                gapi.auth.init(function () {
-                    $rootScope.$broadcast("google:ready", {});
-                });
+                gapi.client.setApiKey('AIzaSyCcXrbQOjSbwmYx9FPUzaaKvQZbjOdcLrk');
+                $rootScope.$broadcast("google:ready", {});
             };
             var script = document.createElement('script');
             script.setAttribute("type","text/javascript");
@@ -97,27 +84,11 @@ angular.module('googleApi', [])
                 self.updateCalendar = googleApiBuilder.build(gapi.client.calendar.calendars.update);
                 self.listCalendars = googleApiBuilder.build(gapi.client.calendar.calendarList.list, itemExtractor);
 
-                $rootScope.$broadcast("googleCalendar:loaded")
+                $rootScope.$broadcast("googleCalendar:loaded");
+
             });
 
         });
 
     })
 
-		.service("googlePlus", function(googleApiBuilder, $rootScope) {
-
-				var self = this;
-				var itemExtractor = function(resp) { return resp.items; };
-
-				googleApiBuilder.afterClientLoaded(function() {
-						gapi.client.load('plus', 'v1', function() {
-							self.getPeople = googleApiBuilder.build(gapi.client.plus.people.get);
-							self.getCurrentUser = function() {
-								return self.getPeople({userId: "me"});
-							}
-							$rootScope.$broadcast("googlePlus:loaded")
-						});
-
-				});
-
-		})

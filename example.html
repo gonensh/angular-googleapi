@@ -2,27 +2,26 @@
 <html lang="en" ng-app="demo" ng-controller="DemoCtrl">
 <head>
   <meta charset="utf-8">
-  <title>Client-side authentication demo</title>
+  <title>Client-side Google Calendar API demo</title>
 </head>
 <body>
 
 <div>
   <div>
-    <button ng-click="login()">Login</button>
-    <select name="calendar" ng-model="selectedCalendar" ng-options="cal.summary for cal in calendars"></select>
-    <button ng-click="loadCalendars()">Get Calendars</button>
-    <button ng-click="loadEvents()">Get Calendar Entries</button>
+    <select ng-model="calendar" ng-options="option.name for option in calendars" ng-change="loadEvents()"></select>
+    {{calendarId}}
+    <button ng-click="loadEvents()">Refresh</button>
   </div>
 
   <ul>
-    <li ng-repeat="item in calendarItems">{{item.summary}}</li>
+    <li ng-repeat="item in calendarItems" title="{{item}}">
+      {{item.summary}}
+      <ul>
+        <li>Date: {{item.start.date || item.start.dateTime | date}}</li>
+        <li>Location: {{item.organizer.displayName}}</li>
+      </ul>
+    </li>
   </ul>
-  <div ng-show="currentUser">
-    <h1>You're authenticated!</h1>
-
-    Logged in as {{currentUser.displayName}}
-
-  </div>
 </div>
 
 <script src="vendor/angular.js"></script>
