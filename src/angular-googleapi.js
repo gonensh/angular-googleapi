@@ -40,7 +40,7 @@ angular.module('googleApi', [])
             this.config = conf;
         };
 
-        this.$get = function ($q, googleApiBuilder, $rootScope) {
+        this.$get = function ($q, $http, googleApiBuilder, $rootScope) {
             var config = this.config;
             var deferred = $q.defer();
             var svc = {
@@ -52,8 +52,14 @@ angular.module('googleApi', [])
 
             // load the gapi client, instructing it to invoke a globally-accessible function when finished
             window._googleApiLoaded = function() {
-                gapi.client.setApiKey('AIzaSyCcXrbQOjSbwmYx9FPUzaaKvQZbjOdcLrk');
-                $rootScope.$broadcast("google:ready", {});
+                var webAppKey;
+                $http.get('web_app.key').then(function(res) {
+                    webAppKey = res.data.toString();
+                    gapi.client.setApiKey(webAppKey);
+                    $rootScope.$broadcast("google:ready", {});
+                    deferred.resolve();
+                });
+
             };
             var script = document.createElement('script');
             script.setAttribute("type","text/javascript");
