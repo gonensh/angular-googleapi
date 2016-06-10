@@ -53,7 +53,7 @@ angular.module('googleApi', [])
             // load the gapi client, instructing it to invoke a globally-accessible function when finished
             window._googleApiLoaded = function() {
                 var webAppKey;
-                $http.get('web_app.key').then(function(res) {
+                $http.get('browser_api.key').then(function(res) {
                     webAppKey = res.data.toString();
                     gapi.client.setApiKey(webAppKey);
                     $rootScope.$broadcast("google:ready", {});
