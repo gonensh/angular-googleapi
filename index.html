@@ -5,12 +5,15 @@
   <title>Client-side Google Calendar API demo</title>
 </head>
 <body>
-
+This page tests the usability of Google Calendar as a data source.
 <div>
   <div>
     <select ng-model="calendar" ng-options="option.name for option in calendars" ng-change="loadEvents()"></select>
     {{calendarId}}
-    <button ng-click="loadEvents()">Refresh</button>
+    <div ng-hide="fetchSucceeded">
+      Error fetching data.
+      <button ng-click="loadEvents()">Try again</button>
+    </div>
   </div>
 
   <ul>
