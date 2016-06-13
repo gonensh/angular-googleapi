@@ -26,10 +26,13 @@ angular.module('demo', ["googleApi"])
             $scope.loadEvents();
         });
 
-        $scope.loadEvents = function() {
+        $scope.loadEvents = function() { //Todo: Add caching, load all calendars on first run
             googleCalendar.listEvents({calendarId: $scope.calendar.calendarId})
             .then(function(data) {
                 $scope.calendarItems = data;
+                $scope.fetchSucceeded = true;
+            }, function(data) {
+                $scope.fetchSucceeded = false;
             });
         }
 
